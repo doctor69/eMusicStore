@@ -2,10 +2,13 @@ package com.eMusicStore.controller;
 
 import com.eMusicStore.dao.ProductDao;
 import com.eMusicStore.model.Product;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -14,20 +17,20 @@ public class HomeController {
 
     private ProductDao productDao = new ProductDao();
 
-    @RequestMapping ("/")
+    @RequestMapping("/")
     public String home() {
-        return "Home";
-
+        return "home";
     }
-
-    @RequestMapping ("/productList")
+    @RequestMapping("/productList")
     public String getProducts(Model model) {
-
-    List<Product> productList = productDao.getProductList();
-    Product product = productList.get(0);
-    model.addAttribute(product);
-
-    return "productList";
-
+        List<Product> products = productDao.getProductList();
+        model.addAttribute("products", products);
+        return "productList";
+    }
+    @RequestMapping(value = "/productList/viewProduct/{productId}")
+    public String viewProduct(@PathVariable String productId,Model model) throws IOException {
+        Product product = productDao.getProductById(productId);
+        model.addAttribute(product);
+        return "viewProduct";
     }
 }
